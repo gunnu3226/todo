@@ -40,7 +40,7 @@ public class TodoController {
     public ResponseEntity<ResponseBodyForm> readTodo(
             @PathVariable Long todoId
     ) {
-        log.info("투두개별 조회 컨트롤러");
+        log.info("투두 개별조회 컨트롤러");
         TodoResponseDto responseDto = todoService.readTodo(todoId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseBodyForm(HttpStatus.OK, "Todo 조회 성공", responseDto));
@@ -48,7 +48,7 @@ public class TodoController {
 
     @GetMapping("/total")
     public ResponseEntity<ResponseBodyForm> readTotalTodo() {
-        log.info("투두개별 조회 컨트롤러");
+        log.info("투두 전체조회 컨트롤러");
         List<TotalTodoResponseDto> totalTodoResponseDto = todoService.readTotalTodo();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseBodyForm(HttpStatus.OK, "ToTal Todo 조회 성공", totalTodoResponseDto));
@@ -58,10 +58,20 @@ public class TodoController {
     public ResponseEntity<ResponseBodyForm> updateTodo(
             @PathVariable Long todoId,
             @RequestBody TodoUpdateRequestDto requestDto,
-            HttpServletRequest request) throws AccessDeniedException {
+            HttpServletRequest request) {
         log.info("투두 업데이트 컨트롤러");
         TodoResponseDto responseDto = todoService.updateTodo(todoId, requestDto, request);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseBodyForm(HttpStatus.OK, "Todo 수정 성공", responseDto));
     }
+
+    @PatchMapping("/{todoId}/finish")
+    public ResponseEntity<ResponseBodyForm> finishTodo(@PathVariable Long todoId, HttpServletRequest request) {
+        log.info("투두 완료 기능 컨트롤러");
+        TodoResponseDto responseDto = todoService.finishTodo(todoId, request);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseBodyForm(HttpStatus.OK, "Todo 완료처리 성공", responseDto));
+    }
 }
+
+

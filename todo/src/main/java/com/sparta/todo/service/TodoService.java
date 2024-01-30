@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +33,7 @@ public class TodoService {
     @Transactional
     public TodoResponseDto createTodo(TodoRequestDto requestDto, HttpServletRequest request) {
         log.info("투두 생성 서비스 집입");
-        String token = jwtUtil.getAndValidateToken(request);
-        String userNameInToken = jwtUtil.getUserInfoFromToken(token).getSubject();
+        String userNameInToken = jwtUtil.validateTokenAndGetUserName(request);
         User user = userRepository.findByUserName(userNameInToken).orElseThrow();
         Todo savedTodo = todoRepository.save(new Todo(requestDto,user));
 
@@ -60,16 +58,27 @@ public class TodoService {
 
     public TodoResponseDto updateTodo(Long todoId, TodoUpdateRequestDto requestDto, HttpServletRequest request) {
         log.info("투두 수정 서비스");
-        String token = jwtUtil.getAndValidateToken(request);
-        String userNameInToken = jwtUtil.getUserInfoFromToken(token).getSubject();
+        String userNameInToken = jwtUtil.validateTokenAndGetUserName(request);
         Todo todo = todoRepository.findById(todoId).orElseThrow(
                 () -> new NoSuchElementException("해당 ID를 가지는 Todo를 찾을 수 없습니다.")
         );
-        log.info(todo.getUser().getUserName());
         if(userNameInToken.equals(todo.getUser().getUserName())) {
             todo.update(requestDto);
             return new TodoResponseDto(todo);
         }
         throw new AccessDeniedException("작성자만 삭제/수정 할 수 있습니다.");
+    }
+
+    public TodoResponseDto finishTodo(Long todoId, HttpServletRequest request) {
+        log.info("투두 완료 서비스");
+        String userNameInToken = jwtUtil.validateTokenAndGetUserName(request);
+        Todo todo = todoRepository.findById(todoId).orElseThrow(
+                () -> new NoSuchElementException("해당 ID를 가지는 Todo를 찾을 수 없습니다.")
+        );
+        if(userNameInToken.equals(todo.getUser().getUserName())) {
+            todo.finish(todo);
+            return new TodoResponseDto(todo);
+        }
+        throw new AccessDeniedException("작성자만 완료처리 할 수 있습니다.");
     }
 }

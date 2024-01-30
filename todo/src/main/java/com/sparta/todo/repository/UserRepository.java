@@ -12,7 +12,4 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserName(String username);
-
-    @Query("select u.todos from User u")
-    List<List<Todo>> findAllTodosByUsers();
 }

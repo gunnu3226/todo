@@ -1,9 +1,9 @@
 package com.sparta.todo.service;
 
 import com.sparta.todo.dto.request.LoginRequestDto;
+import com.sparta.todo.dto.request.SignupRequestDto;
 import com.sparta.todo.dto.response.LoginResponseDto;
 import com.sparta.todo.dto.response.UserResponseDto;
-import com.sparta.todo.dto.request.SignupRequestDto;
 import com.sparta.todo.entity.User;
 import com.sparta.todo.exception.DuplicateUserNameException;
 import com.sparta.todo.exception.IllegalLoginException;

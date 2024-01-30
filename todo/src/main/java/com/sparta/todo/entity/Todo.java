@@ -3,7 +3,9 @@ package com.sparta.todo.entity;
 import com.sparta.todo.dto.request.TodoRequestDto;
 import com.sparta.todo.dto.request.TodoUpdateRequestDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.util.Lazy;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Todo {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +43,9 @@ public class Todo {
     public void update(TodoUpdateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+
+    public void finish(Todo todo) {
+        this.finished = true;
     }
 }

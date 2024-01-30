@@ -84,13 +84,13 @@ public class JwtUtil {
         return null;
     }
 
-    public String getAndValidateToken(HttpServletRequest request) {
+    public String validateTokenAndGetUserName(HttpServletRequest request) {
         log.info("헤더에 토큰존재여부 검사");
         String token = getTokenFromRequest(request);
         if(token != null) {
             log.info("토큰 유효성 검사");
             if(validateToken(token)){
-                return token;
+                return getUserInfoFromToken(token).getSubject();
             };
         }
         throw new NoSuchTokenException("토큰이 유효하지 않습니다.");

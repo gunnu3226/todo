@@ -56,6 +56,8 @@ public class TodoService {
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional
     public TodoResponseDto updateTodo(Long todoId, TodoUpdateRequestDto requestDto, HttpServletRequest request) {
         log.info("투두 수정 서비스");
         String userNameInToken = jwtUtil.validateTokenAndGetUserName(request);
@@ -69,6 +71,7 @@ public class TodoService {
         throw new AccessDeniedException("작성자만 삭제/수정 할 수 있습니다.");
     }
 
+    @Transactional
     public TodoResponseDto finishTodo(Long todoId, HttpServletRequest request) {
         log.info("투두 완료 서비스");
         String userNameInToken = jwtUtil.validateTokenAndGetUserName(request);

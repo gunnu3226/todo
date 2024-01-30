@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class LoginRequestDto {
-    private String userName;
-    private String password;
+public class TodoUpdateRequestDto {
+
+    private String title;
+
+    private String contents;
 }

@@ -1,24 +1,18 @@
 package com.sparta.todo.jwt;
 
+import com.sparta.todo.exception.NoSuchTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.Key;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 
@@ -27,8 +21,8 @@ import java.util.Date;
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer";
-    public final long TOKEN_TIME = 60 * 60 * 1000L;
+    public static final String BEARER_PREFIX = "Bearer ";
+    public final long TOKEN_TIME = 1000L * 60 * 10;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -51,17 +45,6 @@ public class JwtUtil {
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
-    }
-
-    public void addJwtToCookie(String token, HttpHeaders headers) {
-        try{
-            token = URLEncoder.encode(token, "utf-8").replaceAll("//+", "%20");
-
-            log.info("헤더에 토큰 추가");
-            headers.add(HttpHeaders.AUTHORIZATION, token);
-        } catch (UnsupportedEncodingException e) {
-            log.info(e.getMessage());
-        }
     }
 
     public String substringToken(String tokenValue) {
@@ -93,18 +76,23 @@ public class JwtUtil {
     }
 
     public String getTokenFromRequest(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie: cookies) {
-                if(cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if(token != null && token.startsWith(BEARER_PREFIX)) {
+            String jwtToken = substringToken(token);
+            return jwtToken;
         }
         return null;
+    }
+
+    public String getAndValidateToken(HttpServletRequest request) {
+        log.info("헤더에 토큰존재여부 검사");
+        String token = getTokenFromRequest(request);
+        if(token != null) {
+            log.info("토큰 유효성 검사");
+            if(validateToken(token)){
+                return token;
+            };
+        }
+        throw new NoSuchTokenException("토큰이 유효하지 않습니다.");
     }
 }

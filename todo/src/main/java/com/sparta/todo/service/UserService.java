@@ -1,7 +1,7 @@
 package com.sparta.todo.service;
 
-import com.sparta.todo.dto.request.SignInRequestDto;
-import com.sparta.todo.dto.response.SignInResponseDto;
+import com.sparta.todo.dto.request.LoginRequestDto;
+import com.sparta.todo.dto.response.LoginResponseDto;
 import com.sparta.todo.dto.response.UserResponseDto;
 import com.sparta.todo.dto.request.SignupRequestDto;
 import com.sparta.todo.entity.User;
@@ -29,19 +29,19 @@ public class UserService {
 
     @Transactional
     public UserResponseDto signUp(SignupRequestDto requestDto) {
+        log.info("회원가입 서비스 호출");
         Optional<User> user = userRepository.findByUserName(requestDto.getUserName());
         if(user.isPresent()) {
             log.info("회원이름 중복");
             throw new DuplicateUserNameException("중복된 username 입니다.");
         }
         log.info("회원가입 정상로직 실행");
-
         User createdUser = userRepository.save(new User(requestDto.getUserName(),
                 passwordEncoder.encode(requestDto.getPassword())));
         return new UserResponseDto(createdUser);
     }
 
-    public SignInResponseDto login(SignInRequestDto requestDto) {
+    public LoginResponseDto login(LoginRequestDto requestDto) {
         log.info("로그인 서비스 호출");
         String userName = requestDto.getUserName();
         String password = requestDto.getPassword();
@@ -55,6 +55,6 @@ public class UserService {
         }
         log.info("아이디 비밀번호 일치. 토큰 생성");
         String token = jwtUtil.createToken(user.getUserName());
-        return new SignInResponseDto(user, token);
+        return new LoginResponseDto(user, token);
     }
 }

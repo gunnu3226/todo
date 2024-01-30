@@ -1,10 +1,11 @@
-package com.sparta.todo.exception;
+package com.sparta.todo.dto.response;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
-@Getter
+@Getter @Setter
 public class ErrorResponse {
 
     private int statusCode;

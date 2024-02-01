@@ -49,6 +49,7 @@ public class UserController {
         log.info("로그인 성공");
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.AUTHORIZATION, responseDto.getToken())
+
                 .body(responseForm);
     }
 

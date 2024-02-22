@@ -45,7 +45,7 @@ public class Todo {
         this.contents = requestDto.getContents();
     }
 
-    public void finish(Todo todo) {
+    public void finish() {
         this.finished = true;
     }
 }

@@ -41,7 +41,7 @@ public class UserController {
                 .body(responseBodyForm);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<ResponseBodyForm> login(@RequestBody LoginRequestDto requestDto) {
         log.info("로그인 컨트롤러 호출");
         LoginResponseDto responseDto = userService.login(requestDto);
@@ -49,7 +49,6 @@ public class UserController {
         log.info("로그인 성공");
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.AUTHORIZATION, responseDto.getToken())
-
                 .body(responseForm);
     }
 

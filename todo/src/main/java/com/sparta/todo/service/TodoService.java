@@ -79,7 +79,7 @@ public class TodoService {
                 () -> new NoSuchElementException("해당 ID를 가지는 Todo를 찾을 수 없습니다.")
         );
         if(userNameInToken.equals(todo.getUser().getUserName())) {
-            todo.finish(todo);
+            todo.finish();
             return new TodoResponseDto(todo);
         }
         throw new AccessDeniedException("작성자만 완료처리 할 수 있습니다.");

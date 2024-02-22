@@ -19,12 +19,12 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/todo")
+@RequestMapping("/todos")
 public class TodoController {
 
     private final TodoService todoService;
 
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<ResponseBodyForm> createTodo(
             @RequestBody TodoRequestDto requestDto,
             HttpServletRequest request
@@ -46,7 +46,7 @@ public class TodoController {
                 .body(new ResponseBodyForm(HttpStatus.OK, "Todo 조회 성공", responseDto));
     }
 
-    @GetMapping("/total")
+    @GetMapping
     public ResponseEntity<ResponseBodyForm> readTotalTodo() {
         log.info("투두 전체조회 컨트롤러");
         List<TotalTodoResponseDto> totalTodoResponseDto = todoService.readTotalTodo();

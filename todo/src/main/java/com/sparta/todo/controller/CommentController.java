@@ -18,7 +18,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<ResponseBodyForm> createComment(@PathVariable Long todoId,
                                                           @RequestBody CommentRequestDto requestDto,
                                                           HttpServletRequest request) {
